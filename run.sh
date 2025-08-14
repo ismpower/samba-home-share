@@ -15,11 +15,11 @@ LAST_OCTET=$(echo $MACHINE_IP | cut -d'.' -f4)
 
 # Calculate port slot (IP ending .50 = slot 1, .51 = slot 2, etc.)
 # Supports IPs from .50 to .80 (31 slots total)
-if [ $LAST_OCTET -ge 50 ] && [ $LAST_OCTET -le 80 ]; then
-    PORT_SLOT=$((LAST_OCTET - 49))  # .50 becomes slot 1, .51 becomes slot 2, etc.
+if [ $LAST_OCTET -ge 51 ] && [ $LAST_OCTET -le 90 ]; then
+    PORT_SLOT=$((LAST_OCTET - 49))  # .51 becomes slot 1, .52 becomes slot 2, etc.
 else
-    echo "ERROR: IP $MACHINE_IP is outside allowed range (10.10.10.50 - 10.10.10.80)"
-    echo "This prevents access from control devices (.80-.100) and house network (.100+)"
+    echo "ERROR: IP $MACHINE_IP is outside allowed range (10.10.10.51 - 10.10.10.90)"
+    echo "This prevents access from control devices (.90-.100) and house network (.100+)"
     exit 1
 fi
 
@@ -61,6 +61,8 @@ docker run -d \
   --restart unless-stopped \
   -p $SMB_PORT:139 \
   -p $CIFS_PORT:445 \
+  -p $((SMB_PORT-2)):137/udp \
+  -p $((SMB_PORT-1)):138/udp \
   -v "$CURRENT_HOME:/shared-home" \
   -e SAMBA_USER="$CURRENT_USER" \
   -e SAMBA_UID="$CURRENT_UID" \

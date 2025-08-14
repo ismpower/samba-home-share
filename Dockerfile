@@ -2,7 +2,7 @@
 FROM alpine:latest
 
 # Install Samba server
-RUN apk add --no-cache samba
+RUN apk add --no-cache samba bash
 
 # Create a user 'winnay' that matches your Linux user
 # This ensures file permissions work correctly
@@ -15,7 +15,7 @@ RUN mkdir -p /etc/samba
 COPY smb.conf /etc/samba/smb.conf
 
 # Copy our startup script
-COPY start.sh /start.sh
+COPY ./start.sh /start.sh
 RUN chmod +x /start.sh
 
 # Expose Samba ports

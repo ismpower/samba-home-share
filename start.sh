@@ -31,11 +31,12 @@ sed -i "s/force group = .*/force group = sharegroup/" /etc/samba/smb.conf
 # Create Samba user (no password needed since we allow guest access)
 echo "Setting up Samba user..."
 adduser -D -s /bin/false $SAMBA_USER 2>/dev/null || true
-echo -e "\n" | smbpasswd -a $SAMBA_USER -s
+smbpasswd -a -n $SAMBA_USER
 
 # Create log directory
 mkdir -p /var/log/samba
 
 # Start Samba services
 echo "Starting Samba daemon..."
-smbd --foreground --log-stdout --no-process-group
+nmbd -D
+smbd --foreground --no-process-group
